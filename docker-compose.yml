@@ -1,0 +1,24 @@
+version: '3.8'
+
+# Docker Compose apenas para o frontend (React + Vite)
+services:
+  node_dev:
+    image: node:22-alpine
+    container_name: node_dev
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./front:/app            
+      - node_modules:/app/node_modules
+    ports:
+      - "${FRONT_EXTERNAL_PORT}:5173" 
+    environment:
+      - HOST=0.0.0.0                 
+      - NODE_ENV=development
+      - VITE_API_URL=${SERVER_EXTERNAL_PORT}
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - WATCHPACK_POLLING_IGNORED_PATHS=/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+volumes:
+  node_modules: {}
